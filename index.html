@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Q2 — Post Box with Character Counter</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f4;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1c1917;
+        padding: 24px;
+      }
+      .card {
+        width: 100%;
+        max-width: 420px;
+        background: #ffffff;
+        border: 1px solid #e7e5e4;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+      h1 { margin: 0; font-size: 20px; }
+      .subtitle { margin: 4px 0 0; font-size: 14px; color: #78716c; }
+      textarea {
+        width: 100%;
+        margin-top: 16px;
+        padding: 12px;
+        font: inherit;
+        font-size: 14px;
+        border: 1px solid #d6d3d1;
+        border-radius: 8px;
+        resize: none;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      textarea:focus {
+        border-color: #a8a29e;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+      }
+      .meta {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #78716c;
+      }
+      .meta .error { color: #dc2626; font-weight: 500; }
+      .post-btn {
+        margin-top: 16px;
+        width: 100%;
+        padding: 10px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        color: #ffffff;
+        background: #1c1917;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .post-btn:hover:not(:disabled) { background: #44403c; }
+      .post-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .posted {
+        margin-top: 16px;
+        padding: 12px;
+        font-size: 14px;
+        background: #f5f5f4;
+        border: 1px solid #e7e5e4;
+        border-radius: 8px;
+      }
+      .posted strong { font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react">
+      const { useState } = React;
+
+      const MAX_CHARS = 100;
+
+      function PostBox() {
+        // 1. Controlled textarea: value comes from state, changes update state
+        const [text, setText] = useState("");
+
+        const length = text.length;
+        const overLimit = length > MAX_CHARS;          // 3. limit check
+        const canPost = length > 0 && !overLimit;      // 4. enable rule
+
+        const handlePost = () => {
+          if (!canPost) return;
+          alert("Posted: " + text);
+          setText("");
+        };
+
+        return (
+          <div className="card">
+            <h1>Create a post</h1>
+            <p className="subtitle">
+              Share what's on your mind (max {MAX_CHARS} characters).
+            </p>
+
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Write your post here..."
+              rows="4"
+            />
+
+            {/* 2. Live counter + 3. limit-exceeded message */}
+            <div className="meta">
+              <span className={overLimit ? "error" : ""}>
+                {length} / {MAX_CHARS}
+              </span>
+              {overLimit && <span className="error">Limit exceeded</span>}
+            </div>
+
+            {/* 4. Post button disabled when empty or over the limit */}
+            <button
+              className="post-btn"
+              onClick={handlePost}
+              disabled={!canPost}
+            >
+              Post
+            </button>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<PostBox />);
+    </script>
+  </body>
+</html>
